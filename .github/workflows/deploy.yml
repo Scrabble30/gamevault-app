@@ -35,7 +35,7 @@ jobs:
                   # Define SSH connection info
                   SSH_USER="jetty"
                   DO_DROPLET_IP=${{ secrets.DO_DROPLET_IP }}
-                  APP_NAME="game-vault-app"
+                  APP_NAME="gamevault-app"
                   REMOTE_PATH="/home/jetty/2semDockerSetupRemote/site/$APP_NAME/"
 
                   # Sync build output to the Droplet using rsync
