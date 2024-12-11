@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import styled from "styled-components";
 
 const HeaderContainer = styled.header`
@@ -8,7 +9,7 @@ const HeaderContainer = styled.header`
     background-color: grey;
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled(Link)`
     height: 3rem;
 `;
 
@@ -34,7 +35,7 @@ const UserIcon = styled.img`
 const Header = () => {
     return (
         <HeaderContainer>
-            <LogoContainer>
+            <LogoContainer to="/">
                 <Logo src="logo.svg" alt="GameVault" />
             </LogoContainer>
             <IconsContainer>
