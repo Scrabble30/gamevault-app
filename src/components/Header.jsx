@@ -36,11 +36,11 @@ const Header = () => {
     return (
         <HeaderContainer>
             <LogoContainer to="/">
-                <Logo src="logo.svg" alt="GameVault" />
+                <Logo src="/page-logo.svg" alt="GameVault" />
             </LogoContainer>
             <IconsContainer>
-                <SearchIcon src="search-icon.svg" alt="Search" />
-                <UserIcon src="user-icon.svg" alt="User" />
+                <SearchIcon src="/search-icon.svg" alt="Search" />
+                <UserIcon src="/user-icon.svg" alt="User" />
             </IconsContainer>
         </HeaderContainer>
     );
