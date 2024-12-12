@@ -1,5 +1,5 @@
 const GameVaultApiFacade = () => {
-    const url = "http://localhost:7070/api";
+    const url = import.meta.env.VITE_API_URL;
 
     const handleResponse = async (response) => {
         const data = await response.json();
