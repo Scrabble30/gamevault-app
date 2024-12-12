@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import styled from "styled-components";
 
 const GameCardContainer = styled.li`
@@ -24,6 +25,12 @@ const GameBodyContainer = styled.div`
 
 const GameTitle = styled.h3`
     margin: 0;
+
+    a {
+        color: rgba(255, 255, 255, 0.87);
+        text-decoration: none;
+        font-weight: bold;
+    }
 `;
 
 const GameReleased = styled.p`
@@ -37,14 +44,19 @@ const GameCard = ({ game }) => {
     return (
         <GameCardContainer>
             <GameBannerContainer>
-                <GameBanner
-                    src={game.background_image}
-                    alt={game.name}
-                    loading="lazy"
-                />
+                <Link to={`/games/${game.id}`}>
+                    <GameBanner
+                        src={game.background_image}
+                        alt={game.name}
+                        loading="lazy"
+                    />
+                </Link>
             </GameBannerContainer>
             <GameBodyContainer>
-                <GameTitle>{game.name}</GameTitle>
+                <GameTitle>
+                    <Link to={`/games/${game.id}`}>{game.name}</Link>
+                </GameTitle>
+
                 <GameReleased>
                     {new Date(game.released).toLocaleDateString(browserLocale, {
                         year: "numeric",
