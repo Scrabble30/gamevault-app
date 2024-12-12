@@ -16,8 +16,13 @@ const GameVaultApiFacade = () => {
         return handleResponse(response);
     };
 
+    const getGameById = async (gameId) => {
+        return fetch(`${url}/games/${gameId}`).then(handleResponse);
+    };
+
     return {
         getAllGames,
+        getGameById,
     };
 };
 
