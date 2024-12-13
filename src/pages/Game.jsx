@@ -81,6 +81,23 @@ const GameDetails = styled.div`
     margin: 1rem 0 0 0;
 `;
 
+const GameExtraDetails = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    gap: 0.5rem;
+
+    p {
+        margin: 0;
+    }
+`;
+
+const GameMetascore = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
+
 const MetascoreValue = styled.div`
     width: 1.8rem;
     height: 1.8rem;
@@ -166,9 +183,11 @@ const Game = () => {
                     <GameRating>
                         <RatingContainer>
                             <Star src="/filled-star-icon.svg" />
-                            <span>{game.rating}</span>
+                            <span>{(game.rating ?? 0).toFixed(1)}</span>
                         </RatingContainer>
-                        <RatingCount>{`(${game.rating_count})`}</RatingCount>
+                        <RatingCount>{`(${
+                            game.rating_count ?? 0
+                        })`}</RatingCount>
                     </GameRating>
                 </GameBannerBasicInfoContainer>
 
@@ -184,19 +203,23 @@ const Game = () => {
             <GameDetails>
                 <ReadMore html={game.description} maxLength={310} />
 
-                <p>Metascore:</p>
-                <MetascoreValue metascore={game.metacritic}>
-                    {game.metacritic}
-                </MetascoreValue>
+                <GameExtraDetails>
+                    <GameMetascore>
+                        <p>Metascore:</p>
+                        <MetascoreValue metascore={game.metacritic}>
+                            {game.metacritic}
+                        </MetascoreValue>
+                    </GameMetascore>
 
-                <p>Playtime: {game.playtime}</p>
-                <p>
-                    Platforms:{" "}
-                    {game.platforms
-                        .sort((a, b) => a.id - b.id)
-                        .map((platform) => platform.name)
-                        .join(", ")}
-                </p>
+                    <p>Playtime: {game.playtime}</p>
+                    <p>
+                        Platforms:{" "}
+                        {game.platforms
+                            .sort((a, b) => a.id - b.id)
+                            .map((platform) => platform.name)
+                            .join(", ")}
+                    </p>
+                </GameExtraDetails>
             </GameDetails>
         </GameContainer>
     );
