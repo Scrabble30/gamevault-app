@@ -10,7 +10,7 @@ const HeaderContainer = styled.header`
 `;
 
 const LogoContainer = styled(Link)`
-    height: 3rem;
+    height: 2.5rem;
 `;
 
 const Logo = styled.img`
@@ -24,12 +24,12 @@ const IconsContainer = styled.div`
 `;
 
 const SearchIcon = styled.img`
-    height: 2rem;
+    height: 1.5rem;
     margin-top: 0.25rem;
 `;
 
 const UserIcon = styled.img`
-    height: 3rem;
+    height: 2rem;
 `;
 
 const Header = () => {
