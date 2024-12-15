@@ -4,12 +4,19 @@ import gamevaultApiFacade from "../services/gamevaultApiFacade";
 import GameScroller from "../components/GameScroller";
 import styled from "styled-components";
 
+const HomeContainer = styled.div`
+    padding: 1rem 0;
+`;
+
 const GameScrollersContainer = styled.ul`
     display: flex;
-    flex-direction: column;
-    margin: 1rem 0 0 0;
     padding: 0;
+    margin: 0;
+
+    flex-direction: column;
     gap: 2.5rem;
+
+    list-style-type: none;
 `;
 
 const Home = () => {
@@ -57,14 +64,16 @@ const Home = () => {
     }, []);
 
     return (
-        <GameScrollersContainer>
-            <GameScroller title={"New Games"} games={topNewGames} />
-            <GameScroller
-                title={"Top Metacritic Games"}
-                games={topMetacriticGames}
-            />
-            <GameScroller title={"Top Rated Games"} games={topRatedGames} />
-        </GameScrollersContainer>
+        <HomeContainer>
+            <GameScrollersContainer>
+                <GameScroller title={"New Games"} games={topNewGames} />
+                <GameScroller
+                    title={"Top Metacritic Games"}
+                    games={topMetacriticGames}
+                />
+                <GameScroller title={"Top Rated Games"} games={topRatedGames} />
+            </GameScrollersContainer>
+        </HomeContainer>
     );
 };
 

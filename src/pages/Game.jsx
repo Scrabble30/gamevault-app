@@ -107,15 +107,15 @@ const MetascoreValue = styled.div`
     border-radius: 0.25rem;
     border: solid 2px
         ${(props) =>
-            props.metascore >= 75
+            props.$metascore >= 75
                 ? "#66cc33"
-                : props.metascore >= 50
+                : props.$metascore >= 50
                 ? "#ffcc33"
                 : "#ff0000"};
     color: ${(props) =>
-        props.metascore >= 75
+        props.$metascore >= 75
             ? "#66cc33"
-            : props.metascore >= 50
+            : props.$metascore >= 50
             ? "#ffcc33"
             : "#ff0000"};
     font-weight: bold;
@@ -139,7 +139,6 @@ const Game = () => {
             .then((data) => {
                 setGame(data);
                 setLoading(false);
-                console.log(data);
             })
             .catch((err) => {
                 console.error(err);
@@ -206,7 +205,7 @@ const Game = () => {
                 <GameExtraDetails>
                     <GameMetascore>
                         <p>Metascore:</p>
-                        <MetascoreValue metascore={game.metacritic}>
+                        <MetascoreValue $metascore={game.metacritic}>
                             {game.metacritic}
                         </MetascoreValue>
                     </GameMetascore>

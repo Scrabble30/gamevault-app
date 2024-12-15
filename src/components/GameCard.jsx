@@ -1,10 +1,6 @@
 import { Link } from "react-router";
 import styled from "styled-components";
 
-const GameCardContainer = styled.li`
-    list-style-type: none;
-`;
-
 const GameBannerContainer = styled.div`
     width: 256px;
     height: 144px;
@@ -42,7 +38,7 @@ const GameCard = ({ game }) => {
     const browserLocale = navigator.language || navigator.userLanguage;
 
     return (
-        <GameCardContainer>
+        <li>
             <GameBannerContainer>
                 <Link to={`/games/${game.id}`}>
                     <GameBanner
@@ -65,7 +61,7 @@ const GameCard = ({ game }) => {
                     })}
                 </GameReleased>
             </GameBodyContainer>
-        </GameCardContainer>
+        </li>
     );
 };
 

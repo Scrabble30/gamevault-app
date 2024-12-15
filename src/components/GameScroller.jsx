@@ -2,7 +2,6 @@ import styled from "styled-components";
 import GameCard from "./GameCard";
 
 const GameScrollerContainer = styled.li`
-    list-style-type: none;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -15,10 +14,9 @@ const GameScrollerTitle = styled.h2`
 
 const ScrollerContainer = styled.ul`
     display: flex;
-    list-style-type: none;
     overflow-x: scroll;
-    max-width: 600px;
     padding: 0 0 0.5rem 0;
+    list-style-type: none;
 
     li:not(:first-child):not(:last-child) {
         /* Styles for all li elements except first and last */
