@@ -81,12 +81,17 @@ const GameVaultApiFacade = () => {
         return fetch(`${url}/games/${gameId}`).then(handleResponse);
     };
 
+    const getAllGameReviews = async (gameId) => {
+        return fetch(`${url}/games/${gameId}/reviews`).then(handleResponse);
+    };
+
     return {
         getUser,
         login,
         logout,
         getAllGames,
         getGameById,
+        getAllGameReviews,
     };
 };
 
