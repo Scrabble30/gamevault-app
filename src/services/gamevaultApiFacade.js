@@ -76,6 +76,21 @@ const GameVaultApiFacade = () => {
         localStorage.removeItem("jwtToken");
     };
 
+    const signup = (username, password) => {
+        const opts = createOptions(
+            "POST",
+            {},
+            {
+                username,
+                password,
+            }
+        );
+
+        return fetch(`${url}/auth/register`, opts)
+            .then(handleResponse)
+            .then((data) => setToken(data.token));
+    };
+
     const getAllGames = async () => {
         return fetch(`${url}/games`).then(handleResponse);
     };
@@ -121,6 +136,7 @@ const GameVaultApiFacade = () => {
         userHasAccess,
         login,
         logout,
+        signup,
         getAllGames,
         getGameById,
         getAllGameReviews,

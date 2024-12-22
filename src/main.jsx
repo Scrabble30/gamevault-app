@@ -9,6 +9,7 @@ import Game from "./pages/Game.jsx";
 import Login from "./pages/Login.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import Review from "./pages/Review.jsx";
+import SignUp from "./pages/Signup.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -25,6 +26,7 @@ createRoot(document.getElementById("root")).render(
                         </Route>
                     </Route>
                     <Route path="login" element={<Login />} />
+                    <Route path="signup" element={<SignUp />} />
                 </Route>
             </Routes>
         </BrowserRouter>

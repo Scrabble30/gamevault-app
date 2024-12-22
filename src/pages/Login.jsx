@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
 
@@ -23,6 +23,14 @@ const LoginFormContent = styled.form`
     border-radius: 0.5rem;
     padding: 1.5rem;
     width: 260px;
+`;
+
+const SignUpPrompt = styled.p`
+    margin: 0 0 1rem 0;
+
+    a:visited {
+        color: rgb(158, 158, 255);
+    }
 `;
 
 const LoginFormInput = styled.div`
@@ -189,6 +197,11 @@ const Login = () => {
 
             <LoginFormContainer>
                 <LoginFormContent onSubmit={handleLogin}>
+                    <SignUpPrompt>
+                        Don&#39;t have an account?{" "}
+                        <Link to="/signup">Signup</Link>
+                    </SignUpPrompt>
+
                     <LoginFormInput>
                         <Label htmlFor="username">Username</Label>
                         <Input
