@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useOutletContext } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
 
@@ -130,7 +130,6 @@ const Button = styled.button`
 `;
 
 const SignUp = () => {
-    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -146,13 +145,14 @@ const SignUp = () => {
     const passwordInputRef = useRef(null);
     const confirmPasswordInputRef = useRef(null);
 
+    const { setLoggedIn } = useOutletContext();
+    const navigate = useNavigate();
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         setUsernameError("");
         setPasswordError("");
         setConfirmPasswordError("");
-        setShowPassword(false);
-        setShowConfirmPassword(false);
 
         if (!username) {
             setUsernameError("Username is required.");
@@ -169,8 +169,15 @@ const SignUp = () => {
             return;
         }
 
+        const passwordInput = passwordInputRef.current;
+        const confirmPasswordInput = confirmPasswordInputRef.current;
+        passwordInput.type = "password";
+        confirmPasswordInput.type = "password";
+
         try {
             await gamevaultApiFacade.signup(username, password);
+
+            setLoggedIn(true);
             navigate("/");
         } catch (error) {
             if (error.status === 404 && error.message.startsWith("User")) {

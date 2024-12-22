@@ -9,10 +9,7 @@ const GameVaultApiFacade = () => {
                 logout();
             }
 
-            throw {
-                status: data.status,
-                message: data.message,
-            };
+            throw data;
         }
 
         return data;
@@ -41,8 +38,12 @@ const GameVaultApiFacade = () => {
         localStorage.setItem("jwtToken", token);
     };
 
+    const isLoggedIn = () => {
+        return getToken() != null;
+    };
+
     const getUser = () => {
-        if (getToken()) {
+        if (isLoggedIn()) {
             const payloadBase64 = getToken().split(".")[1];
             const decodedClaims = JSON.parse(window.atob(payloadBase64));
 
@@ -76,7 +77,7 @@ const GameVaultApiFacade = () => {
         localStorage.removeItem("jwtToken");
     };
 
-    const signup = (username, password) => {
+    const signup = async (username, password) => {
         const opts = createOptions(
             "POST",
             {},
@@ -132,6 +133,7 @@ const GameVaultApiFacade = () => {
     };
 
     return {
+        isLoggedIn,
         getUser,
         userHasAccess,
         login,

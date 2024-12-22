@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Outlet } from "react-router";
 import styled from "styled-components";
+import gamevaultApiFacade from "./services/gamevaultApiFacade";
 //import "./App.css";
 
 import Header from "./components/Header";
@@ -15,12 +17,14 @@ const Content = styled.div`
 `;
 
 function App() {
+    const [loggedIn, setLoggedIn] = useState(gamevaultApiFacade.isLoggedIn);
+
     return (
         <>
-            <Header />
+            <Header loggedIn={loggedIn} />
             <Main>
                 <Content>
-                    <Outlet />
+                    <Outlet context={{ loggedIn, setLoggedIn }} />
                 </Content>
             </Main>
         </>

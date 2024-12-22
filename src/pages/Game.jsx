@@ -2,6 +2,12 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
+import ErrorPage from "./ErrorPage";
+
+const LoadingText = styled.h3`
+    padding: 1rem;
+    margin: 0;
+`;
 
 const PageBannerContainer = styled.div`
     display: grid;
@@ -163,41 +169,45 @@ const ReviewsButton = styled.button`
 `;
 
 const Game = () => {
-    const [expanded, setExpanded] = useState(false);
+    const [game, setGame] = useState(null);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [game, setGame] = useState(null);
+
+    const [expanded, setExpanded] = useState(false);
 
     const { gameId } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        setLoading(true);
-        setError(null);
+        const fetchGameData = async () => {
+            setLoading(true);
+            setError(null);
 
-        gamevaultApiFacade
-            .getGameById(gameId)
-            .then((data) => {
-                setGame(data);
+            try {
+                const gameData = await gamevaultApiFacade.getGameById(gameId);
+                setGame(gameData);
+            } catch (error) {
+                if (error.status !== 404) setError(error.message);
+                console.error(error);
+            } finally {
                 setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError(err.message);
-                setLoading(false);
-            });
+            }
+        };
+
+        fetchGameData();
     }, [gameId]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingText>Loading...</LoadingText>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage description={error} />;
     }
 
     if (!game) {
-        return <div>No game data available</div>;
+        return <ErrorPage statusCode={404} />;
     }
 
     const formatDate = (dateString) => {

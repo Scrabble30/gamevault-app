@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
+import ErrorPage from "./ErrorPage";
+
+const LoadingText = styled.h3`
+    padding: 1rem;
+    margin: 0;
+`;
 
 const PageBannerContainer = styled.div`
     display: grid;
@@ -125,32 +131,33 @@ const GameReviewRatingStarIcon = styled.img`
 `;
 
 const Reviews = () => {
-    const navigate = useNavigate();
-    const { gameId } = useParams();
-
     const [user] = useState(gamevaultApiFacade.getUser);
-    const [reviews, setReviews] = useState([]);
+
     const [game, setGame] = useState(null);
+    const [reviews, setReviews] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        setLoading(true);
-        setError(null);
+    const { gameId } = useParams();
+    const navigate = useNavigate();
 
+    useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
-                const [game, reviews] = await Promise.all([
+                const [gameData, reviewsData] = await Promise.all([
                     gamevaultApiFacade.getGameById(gameId),
                     gamevaultApiFacade.getAllGameReviews(gameId),
                 ]);
 
-                setGame(game);
-                setReviews(reviews.sort((a, b) => a.id - b.id));
+                setGame(gameData);
+                setReviews(reviewsData.sort((a, b) => a.id - b.id));
             } catch (error) {
-                console.error("Error fetching data:", error);
-                setError(error.message);
+                if (error.status !== 404) setError(error.message);
+                console.error(error);
             } finally {
                 setLoading(false);
             }
@@ -160,15 +167,15 @@ const Reviews = () => {
     }, [gameId]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingText>Loading...</LoadingText>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage description={error} />;
     }
 
     if (!game) {
-        return <div>No game data available</div>;
+        return <ErrorPage statusCode={404} />;
     }
 
     const handleBack = () => {

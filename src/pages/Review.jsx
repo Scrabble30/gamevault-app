@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useOutletContext } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
+import ErrorPage from "./ErrorPage";
+
+const LoadingText = styled.h3`
+    padding: 1rem;
+    margin: 0;
+`;
 
 const PageBannerContainer = styled.div`
     display: grid;
@@ -113,31 +119,46 @@ const FormButton = styled.button`
 `;
 
 const Review = () => {
-    const navigate = useNavigate();
-    const { gameId, reviewId } = useParams();
-
     const [user] = useState(gamevaultApiFacade.getUser);
-    const [review, setReview] = useState(null);
+
     const [game, setGame] = useState(null);
+    const [review, setReview] = useState(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!user) {
-            return;
-        }
+    const { gameId, reviewId } = useParams();
+    const { loggedIn } = useOutletContext();
+    const navigate = useNavigate();
 
-        setLoading(true);
-        setError(null);
+    useEffect(() => {
+        if (
+            !loggedIn ||
+            !gamevaultApiFacade.userHasAccess(user, ["user", "admin"])
+        )
+            return;
 
         const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
                 const gamePromise = gamevaultApiFacade.getGameById(gameId);
                 let reviewPromise;
 
                 if (reviewId) {
-                    reviewPromise = gamevaultApiFacade.getReviewById(reviewId);
+                    reviewPromise = gamevaultApiFacade
+                        .getReviewById(reviewId)
+                        .then((data) => {
+                            if (data.game_id != gameId) {
+                                throw {
+                                    status: 404,
+                                    message: `Review ${reviewId} not found for game ${gameId}`,
+                                };
+                            }
+
+                            return data;
+                        });
                 } else {
                     reviewPromise = Promise.resolve({
                         username: user.username,
@@ -147,54 +168,46 @@ const Review = () => {
                     });
                 }
 
-                const [game, review] = await Promise.all([
+                const [gameData, reviewData] = await Promise.all([
                     gamePromise,
                     reviewPromise,
                 ]);
 
-                setGame(game);
-                setReview(review);
-
-                if (reviewId && game.id !== review.game_id) {
-                    setError("Review not found for this game");
-                }
+                setGame(gameData);
+                setReview(reviewData);
             } catch (error) {
-                console.error("Error fetching data:", error);
-                setError(error.message);
+                if (error.status !== 404) setError(error.message);
+                console.error(error);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [gameId, reviewId, user]);
+    }, [loggedIn, user, gameId, reviewId]);
 
-    if (!user) {
-        return <div>You must be logged in to view this page</div>;
+    if (!loggedIn) {
+        return <ErrorPage statusCode={401} />;
     }
 
     if (!gamevaultApiFacade.userHasAccess(user, ["user", "admin"])) {
-        return <h3>You do not have the required role to view this page</h3>;
+        return <ErrorPage statusCode={403} />;
     }
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingText>Loading...</LoadingText>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage description={error} />;
     }
 
-    if (!game) {
-        return <div>No game data available</div>;
-    }
-
-    if (!review) {
-        return <div>No review data available</div>;
+    if (!game || !review) {
+        return <ErrorPage statusCode={404} />;
     }
 
     if (reviewId && review.username !== user.username) {
-        return <div>You are not allowed to edit this review</div>;
+        return <ErrorPage statusCode={403} />;
     }
 
     const handleBackClick = () => {
@@ -208,8 +221,6 @@ const Review = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        console.log(review);
 
         if (reviewId) {
             gamevaultApiFacade

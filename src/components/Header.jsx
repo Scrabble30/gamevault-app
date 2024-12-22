@@ -50,14 +50,26 @@ const IconsContainer = styled.div`
 `;
 
 const SearchIcon = styled.img`
+    display: block;
     height: 1.5rem;
+    margin-top: 0.1rem;
 `;
 
 const UserIcon = styled.img`
+    display: block;
     height: 2rem;
 `;
 
-const Header = () => {
+const Login = styled(Link)`
+    text-decoration: none;
+
+    p {
+        font-weight: bold;
+        color: black;
+    }
+`;
+
+const Header = ({ loggedIn }) => {
     return (
         <HeaderContainer>
             <HeaderContent>
@@ -67,9 +79,13 @@ const Header = () => {
                 </LogoContainer>
                 <IconsContainer>
                     <SearchIcon src="/search-icon.svg" alt="Search" />
-                    <Link to="/login">
-                        <UserIcon src="/user-icon.svg" alt="User" />
-                    </Link>
+                    <Login to="/login">
+                        {loggedIn ? (
+                            <UserIcon src="/user-icon.svg" alt="User" />
+                        ) : (
+                            <p>Login</p>
+                        )}
+                    </Login>
                 </IconsContainer>
             </HeaderContent>
         </HeaderContainer>

@@ -10,6 +10,7 @@ import Login from "./pages/Login.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import Review from "./pages/Review.jsx";
 import SignUp from "./pages/Signup.jsx";
+import ErrorPage from "./pages/ErrorPage.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")).render(
                     </Route>
                     <Route path="login" element={<Login />} />
                     <Route path="signup" element={<SignUp />} />
+                    <Route path="*" element={<ErrorPage statusCode={404} />} />
                 </Route>
             </Routes>
         </BrowserRouter>

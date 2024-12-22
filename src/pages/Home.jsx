@@ -26,37 +26,32 @@ const Home = () => {
 
     useEffect(() => {
         const fetchGames = async () => {
-            let fetchedGames = await gamevaultApiFacade.getAllGames();
-            fetchedGames = fetchedGames.map((game) => ({
-                ...game,
-                ["released"]: new Date(game.released),
-            }));
-
-            let gamesByReleased = fetchedGames.sort(
-                (a, b) => b.released - a.released
+            let fetchedGames = (await gamevaultApiFacade.getAllGames()).map(
+                (game) => ({
+                    ...game,
+                    ["released"]: new Date(game.released),
+                })
             );
 
             setTopNewGames(
-                gamesByReleased.slice(0, Math.min(10, gamesByReleased.length))
-            );
-
-            let gamesByMetacritic = fetchedGames.sort(
-                (a, b) => b.metacritic - a.metacritic
+                fetchedGames
+                    .slice()
+                    .sort((a, b) => b.released - a.released)
+                    .slice(0, Math.min(10, fetchedGames.length))
             );
 
             setTopMetacriticGames(
-                gamesByMetacritic.slice(
-                    0,
-                    Math.min(10, gamesByMetacritic.length)
-                )
-            );
-
-            let gamesByRating = fetchedGames.sort(
-                (a, b) => b.rating - a.rating
+                fetchedGames
+                    .slice()
+                    .sort((a, b) => b.metacritic - a.metacritic)
+                    .slice(0, Math.min(10, fetchedGames.length))
             );
 
             setTopRatedGames(
-                gamesByRating.slice(0, Math.min(10, gamesByRating.length))
+                fetchedGames
+                    .slice()
+                    .sort((a, b) => b.rating - a.rating)
+                    .slice(0, Math.min(10, fetchedGames.length))
             );
         };
 
