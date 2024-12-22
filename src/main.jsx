@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 import Game from "./pages/Game.jsx";
 import Login from "./pages/Login.jsx";
 import Reviews from "./pages/Reviews.jsx";
+import Review from "./pages/Review.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -17,7 +18,11 @@ createRoot(document.getElementById("root")).render(
                     <Route index element={<Home />} />
                     <Route path="games/:gameId">
                         <Route index element={<Game />} />
-                        <Route path="reviews" element={<Reviews />} />
+                        <Route path="reviews">
+                            <Route index element={<Reviews />} />
+                            <Route path="create" element={<Review />} />
+                            <Route path=":reviewId/edit" element={<Review />} />
+                        </Route>
                     </Route>
                     <Route path="login" element={<Login />} />
                 </Route>

@@ -53,6 +53,10 @@ const GameVaultApiFacade = () => {
         }
     };
 
+    const userHasAccess = (user, requiredRoles) => {
+        return requiredRoles.some((role) => user.roles.includes(role));
+    };
+
     const login = async (username, password) => {
         const opts = createOptions(
             "POST",
@@ -73,8 +77,7 @@ const GameVaultApiFacade = () => {
     };
 
     const getAllGames = async () => {
-        const response = await fetch(`${url}/games`);
-        return handleResponse(response);
+        return fetch(`${url}/games`).then(handleResponse);
     };
 
     const getGameById = async (gameId) => {
@@ -85,13 +88,45 @@ const GameVaultApiFacade = () => {
         return fetch(`${url}/games/${gameId}/reviews`).then(handleResponse);
     };
 
+    const getReviewById = async (reviewId) => {
+        return fetch(`${url}/reviews/${reviewId}`).then(handleResponse);
+    };
+
+    const createReview = async (review) => {
+        const opts = createOptions(
+            "POST",
+            {
+                Authorization: `Bearer ${getToken()}`,
+            },
+            review
+        );
+
+        return fetch(`${url}/reviews`, opts).then(handleResponse);
+    };
+
+    const updateReview = async (reviewId, review) => {
+        const opts = createOptions(
+            "PUT",
+            {
+                Authorization: `Bearer ${getToken()}`,
+            },
+            review
+        );
+
+        return fetch(`${url}/reviews/${reviewId}`, opts).then(handleResponse);
+    };
+
     return {
         getUser,
+        userHasAccess,
         login,
         logout,
         getAllGames,
         getGameById,
         getAllGameReviews,
+        getReviewById,
+        createReview,
+        updateReview,
     };
 };
 

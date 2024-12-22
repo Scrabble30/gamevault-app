@@ -54,9 +54,26 @@ const ReviewsContent = styled.div`
     padding: 1rem;
 `;
 
+const ReviewsHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
 const ReviewsTitle = styled.h1`
     font-size: 2.5rem;
     margin: 0;
+`;
+
+const WriteReviewButton = styled.button`
+    padding: 0.5rem 1rem;
+    background-color: #4caf50; // You can change this to match your color scheme
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 1rem;
 `;
 
 const GameReviews = styled.ul`
@@ -111,8 +128,8 @@ const Reviews = () => {
     const navigate = useNavigate();
     const { gameId } = useParams();
 
+    const [user] = useState(gamevaultApiFacade.getUser);
     const [reviews, setReviews] = useState([]);
-
     const [game, setGame] = useState(null);
 
     const [loading, setLoading] = useState(true);
@@ -122,21 +139,24 @@ const Reviews = () => {
         setLoading(true);
         setError(null);
 
-        gamevaultApiFacade
-            .getGameById(gameId)
-            .then((data) => {
-                setGame(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError(err.message);
-                setLoading(false);
-            });
+        const fetchData = async () => {
+            try {
+                const [game, reviews] = await Promise.all([
+                    gamevaultApiFacade.getGameById(gameId),
+                    gamevaultApiFacade.getAllGameReviews(gameId),
+                ]);
 
-        gamevaultApiFacade
-            .getAllGameReviews(gameId)
-            .then((data) => setReviews(data.sort((a, b) => a.id - b.id)));
+                setGame(game);
+                setReviews(reviews.sort((a, b) => a.id - b.id));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [gameId]);
 
     if (loading) {
@@ -155,6 +175,10 @@ const Reviews = () => {
         navigate(`/games/${gameId}`);
     };
 
+    const handleWriteReviewClick = () => {
+        navigate(`/games/${gameId}/reviews/create`);
+    };
+
     return (
         <div>
             <PageBannerContainer>
@@ -169,27 +193,40 @@ const Reviews = () => {
             </PageBannerContainer>
 
             <ReviewsContent>
-                <ReviewsTitle>Reviews</ReviewsTitle>
+                <ReviewsHeader>
+                    <ReviewsTitle>Reviews</ReviewsTitle>
+                    {user ? (
+                        <WriteReviewButton onClick={handleWriteReviewClick}>
+                            Write Review
+                        </WriteReviewButton>
+                    ) : (
+                        <p>Login to write a review</p>
+                    )}
+                </ReviewsHeader>
 
                 <GameReviews>
-                    {reviews.map((review) => (
-                        <GameReview key={review.id}>
-                            <GameReviewHeader>
-                                <h3>{review.username}</h3>
+                    {reviews.length === 0 ? (
+                        <p>No reviews yet...</p>
+                    ) : (
+                        reviews.map((review) => (
+                            <GameReview key={review.id}>
+                                <GameReviewHeader>
+                                    <h3>{review.username}</h3>
 
-                                <GameReviewRatingContainer>
-                                    <GameReviewRatingStarIcon
-                                        src="/filled-star-icon.svg"
-                                        alt="Star"
-                                    />
-                                    <p>{review.rating}</p>
-                                </GameReviewRatingContainer>
-                            </GameReviewHeader>
-                            <div>
-                                <p>{review.review}</p>
-                            </div>
-                        </GameReview>
-                    ))}
+                                    <GameReviewRatingContainer>
+                                        <GameReviewRatingStarIcon
+                                            src="/filled-star-icon.svg"
+                                            alt="Star"
+                                        />
+                                        <p>{review.rating}</p>
+                                    </GameReviewRatingContainer>
+                                </GameReviewHeader>
+                                <div>
+                                    <p>{review.review}</p>
+                                </div>
+                            </GameReview>
+                        ))
+                    )}
                 </GameReviews>
             </ReviewsContent>
         </div>
