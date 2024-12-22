@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import styled from "styled-components";
 import gamevaultApiFacade from "../services/gamevaultApiFacade";
 import ErrorPage from "./ErrorPage";
+import ReadMore from "../components/ReadMore";
 
 const LoadingText = styled.h3`
     padding: 1rem;
@@ -54,17 +55,36 @@ const GameTitle = styled.h1`
     }
 `;
 
-const MetaInfo = styled.div`
+const MetaInfo = styled.ul`
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 `;
 
-const MetaItem = styled.span`
+const MetaItem = styled.li`
     background-color: rgba(0, 0, 0, 0.6);
     padding: 5px 10px;
     border-radius: 15px;
     font-size: 0.9rem;
+    display: inline-flex;
+`;
+
+const UserRating = styled.span`
+    display: flex;
+`;
+
+const RatingContainer = styled.span`
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.4rem;
+    gap: 0.2rem;
+`;
+
+const StarIcon = styled.img`
+    height: 0.8rem;
 `;
 
 const MetacriticScoreValue = styled.span`
@@ -112,26 +132,6 @@ const GameDescription = styled.div`
     }
 `;
 
-const ReadMoreButton = styled.button`
-    background: none;
-    border: none;
-    color: #4a90e2;
-    cursor: pointer;
-    padding: 0;
-    font-size: 1rem;
-    margin-top: 10px;
-`;
-
-const ReadLessButton = styled.button`
-    background: none;
-    border: none;
-    color: #4a90e2;
-    cursor: pointer;
-    padding: 0;
-    font-size: 1rem;
-    margin-top: 10px;
-`;
-
 const List = styled.ul`
     list-style-type: none;
     padding: 0;
@@ -173,8 +173,6 @@ const Game = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const [expanded, setExpanded] = useState(false);
 
     const { gameId } = useParams();
     const navigate = useNavigate();
@@ -218,14 +216,6 @@ const Game = () => {
         });
     };
 
-    const formatRating = () => {
-        if (game.rating !== null && game.rating_count !== null) {
-            return `User Rating: ${game.rating}/10 (${game.rating_count})`;
-        } else {
-            return "User Rating: N/A";
-        }
-    };
-
     const handleReviewsClick = () => {
         navigate(`/games/${gameId}/reviews`);
     };
@@ -244,7 +234,21 @@ const Game = () => {
                             Released: {formatDate(game.released)}
                         </MetaItem>
                         <MetaItem>Playtime: {game.playtime} hours</MetaItem>
-                        <MetaItem>{formatRating()}</MetaItem>
+                        <MetaItem>
+                            <UserRating>
+                                User Rating:
+                                {game.rating && game.rating_count ? (
+                                    <RatingContainer>
+                                        <StarIcon src="/filled-star-icon.svg" />
+                                        <span>
+                                            {game.rating} ({game.rating_count})
+                                        </span>
+                                    </RatingContainer>
+                                ) : (
+                                    <span>N/A</span>
+                                )}
+                            </UserRating>
+                        </MetaItem>
                         <MetaItem>
                             <span>Metascore: </span>
                             <MetacriticScoreValue $score={game.metacritic}>
@@ -259,7 +263,8 @@ const Game = () => {
                 <Section>
                     <SectionTitle>Description</SectionTitle>
                     <GameDescription>
-                        {expanded ? (
+                        <ReadMore html={game.description} maxLength={300} />
+                        {/*expanded ? (
                             <>
                                 <div
                                     dangerouslySetInnerHTML={{
@@ -287,7 +292,7 @@ const Game = () => {
                                     Read more
                                 </ReadMoreButton>
                             </>
-                        )}
+                        )*/}
                     </GameDescription>
                 </Section>
                 <Section>

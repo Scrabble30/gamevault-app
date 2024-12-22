@@ -19,23 +19,13 @@ const Container = styled.div`
 `;
 
 const ToggleButton = styled.button`
-    background-color: #007bff;
-    color: white;
+    background: none;
     border: none;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.6rem;
+    color: #4a90e2;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    margin-top: 0.5rem;
-
-    &:hover {
-        background-color: #0056b3;
-    }
-
-    &:focus {
-        outline: none;
-    }
+    padding: 0;
+    font-size: 1rem;
+    margin-top: 10px;
 `;
 
 const truncatePTagContent = (html, maxLength) => {
