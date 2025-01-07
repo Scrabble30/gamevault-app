@@ -264,35 +264,6 @@ const Game = () => {
                     <SectionTitle>Description</SectionTitle>
                     <GameDescription>
                         <ReadMore html={game.description} maxLength={300} />
-                        {/*expanded ? (
-                            <>
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html: game.description,
-                                    }}
-                                />
-                                <ReadLessButton
-                                    onClick={() => setExpanded(false)}
-                                >
-                                    Show less
-                                </ReadLessButton>
-                            </>
-                        ) : (
-                            <>
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            game.description.slice(0, 300) +
-                                            "...",
-                                    }}
-                                />
-                                <ReadMoreButton
-                                    onClick={() => setExpanded(true)}
-                                >
-                                    Read more
-                                </ReadMoreButton>
-                            </>
-                        )*/}
                     </GameDescription>
                 </Section>
                 <Section>
